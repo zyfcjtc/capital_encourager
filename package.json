@@ -34,6 +34,14 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "developer_encourager.showhello",
+        "title": "Hello World"
+      }
+    ]
+  },
   "scripts": {
     "build": "tsup src/index.ts --external vscode",
     "dev": "nr build --watch",
