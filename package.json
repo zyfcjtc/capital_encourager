@@ -37,10 +37,30 @@
   "contributes": {
     "commands": [
       {
-        "command": "developer_encourager.encouragement",
-        "title": "Need Some Encouragement"
+        "command": "capital_encourager.encouragement",
+        "title": "I NEED SOME ENCOURAGEMENT!"
+      },
+      {
+        "command": "capital_encourager.fine",
+        "title": "I'm fine, I don't need encouragement"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Encouragement",
+      "properties": {
+        "capital_encourager.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Check it if you need some encouragement!"
+        },
+        "capital_encourager.duration": {
+          "type": "integer",
+          "default": 5,
+          "markdownDescription": "Duration"
+        }
+      }
+    }
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode",
