@@ -1,24 +1,53 @@
-import { window, commands, workspace } from 'vscode'
+import type { ExtensionContext } from 'vscode'
+import { ConfigurationTarget, commands, window, workspace } from 'vscode'
 
-export function activate() {
-  let disposable = commands.registerCommand('developer_encourager.showhello', () => {
-    window.showInformationMessage('Hello')
-  });
-  
-  let counter = 5
-  let intervalId = setInterval(() => {
-    counter -= 1
-    console.log(counter)
-    if (counter === 0) {
-      window.showInformationMessage('Need some help?')
+export function activate(context: ExtensionContext) {
+  // watch if the configuration has changed
+  workspace.onDidChangeConfiguration(async () => {
+    const config = workspace.getConfiguration('capital_encourager')
+    let intervalId
+    config.enabled ? window.showInformationMessage('Capital Encourager is Enabled') : window.showInformationMessage('Capital Encourager is Disabled')
+    if (config.enabled && config.duration > 0) {
+      let counter = config.duration
+      intervalId = setInterval(() => {
+        counter -= 1
+        if (counter === 0)
+          window.showInformationMessage(randomQuotes())
+      }, 1000)
     }
-  }, 1000)
-  workspace.onDidChangeTextDocument(async ()=>{
-    counter = 5
-    window.showInformationMessage('text changed')
+    else {
+      clearInterval(intervalId)
+    }
   })
-  
-  
+
+  // add a command to enable encourager
+  const getEncouragement = commands.registerCommand('capital_encourager.encouragement', () => {
+    const config = workspace.getConfiguration('capital_encourager')
+    config.update('enabled', true, ConfigurationTarget.Global)
+  })
+
+  // add a command to disable encourager
+  const imFine = commands.registerCommand('capital_encourager.fine', () => {
+    const config = workspace.getConfiguration('capital_encourager')
+    config.update('enabled', false, ConfigurationTarget.Global)
+  })
+  context.subscriptions.push(getEncouragement)
+  context.subscriptions.push(imFine)
+}
+
+function randomQuotes() {
+  const quotes = [
+    'It’s not a bug. It’s an undocumented feature!  - Anonymous',
+    'If debugging is the process of removing software bugs, then programming must be the process of putting them in. - Edsger Dijkstra',
+    'What separates design from art is that design is meant to be… functional.  - Cameron Moll',
+    'Measuring programming progress by lines of code is like measuring aircraft building progress by weight.  - Bill Gates',
+    'My code DOESN’T work, I have no idea why. My code WORKS, I have no idea why.  - Anonymous',
+    'Things aren’t always #000000 and #FFFFFF.  - HTML Proverb',
+    'If at first you don’t succeed; call it version 1.0.  - Unknown',
+    'Software always remain softly for End users! But sometimes hardly to developers!  - Bananeza Pacifique',
+  ]
+
+  return quotes[Math.floor(Math.random() * 9)]
 }
 
 export function deactivate() {
