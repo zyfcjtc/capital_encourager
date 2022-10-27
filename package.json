@@ -37,8 +37,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "developer_encourager.showhello",
-        "title": "Hello World"
+        "command": "developer_encourager.encouragement",
+        "title": "Need Some Encouragement"
       }
     ]
   },
